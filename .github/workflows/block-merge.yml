@@ -7,8 +7,6 @@ on:
       - synchronize
   workflow_dispatch:
   workflow_run:
-    types:
-      - completed
     branches:
       - master
 
