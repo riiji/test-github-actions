@@ -1,0 +1,33 @@
+name: Before Squash & Merge
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  before_squash_merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the repository owner and name
+          REPO_OWNER=$(echo "$GITHUB_REPOSITORY" | cut -d '/' -f 1)
+          REPO_NAME=$(echo "$GITHUB_REPOSITORY" | cut -d '/' -f 2)
+      
+          # Check if GitHub Actions is running on the master branch
+          MASTER_BRANCH_STATUS=$(curl -s -X GET \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/actions/runs?branch=master" | jq '.workflow_runs[0].status')
+      
+          if [[ "$MASTER_BRANCH_STATUS" == "\"in_progress\"" ]]; then
+            echo "GitHub Actions is currently running on the master branch. Cannot merge."
+            exit 1
+          else
+            echo "GitHub Actions is not running on the master branch. Proceed with merge."
+          fi
