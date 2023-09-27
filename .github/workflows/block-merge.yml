@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Check Pull Request
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           # Get the repository owner and name
           REPO_OWNER=$(echo "$GITHUB_REPOSITORY" | cut -d '/' -f 1)
