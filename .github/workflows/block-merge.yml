@@ -6,10 +6,16 @@ on:
       - opened
       - synchronize
   workflow_dispatch:
+  workflow_run:
+    types:
+      - completed
+    branches:
+      - master
 
 jobs:
   before_squash_merge:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.base.ref == 'master' || github.ref == 'refs/heads/master'
 
     steps:
       - name: Check Pull Request
